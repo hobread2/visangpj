@@ -23,7 +23,7 @@
                 repeating-linear-gradient(var(--cork-texture) 0.5px, transparent 1px);
             background-size: 20px 20px;
             margin: 0;
-            padding: 40px 15px; /* 모바일 대응을 위해 좌우 패딩 소폭 축소 */
+            padding: 40px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -80,7 +80,6 @@
         /* 게시판 그리드 */
         #board {
             display: grid;
-            /* 데스크톱: 자동 채우기 */
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 25px;
             width: 100%;
@@ -90,7 +89,7 @@
         /* 폴라로이드 카드 디자인 */
         .photo-card {
             background: #fff;
-            padding: 10px 10px 30px 10px;
+            padding: 10px 10px 40px 10px; /* 아래쪽 여백 확보 */
             box-shadow: 5px 8px 15px rgba(0,0,0,0.2);
             position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -120,19 +119,23 @@
             margin-bottom: 10px;
         }
 
-        /* 캡션/메모 스타일 */
-        .card-memo {
+        /* 인풋 태그 스타일링 */
+        .memo-input {
             font-family: 'Nanum Pen Script', cursive;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             color: #333;
-            margin-top: 2px;
-            border-bottom: 1px solid #eee;
-            display: inline-block;
             width: 90%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            border: none;
+            border-bottom: 1px solid #eee;
+            background: transparent;
+            text-align: center;
             outline: none;
+            padding: 2px 0;
+            margin-top: 5px;
+        }
+
+        .memo-input::placeholder {
+            color: #ccc;
         }
 
         .card-date {
@@ -204,14 +207,14 @@
         /* 모바일 대응: 한 줄에 2개씩 노출 */
         @media (max-width: 600px) {
             #board {
-                grid-template-columns: repeat(2, 1fr); /* 2열 고정 */
-                gap: 15px; /* 모바일에서는 간격을 조금 좁힘 */
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
             }
             .photo-card {
-                padding: 8px 8px 25px 8px; /* 카드 안쪽 여백 축소 */
+                padding: 8px 8px 30px 8px;
             }
-            .card-memo {
-                font-size: 1.1rem;
+            .memo-input {
+                font-size: 1.2rem;
             }
             h1 { font-size: 2.8rem; }
             .subtitle { font-size: 0.95rem; }
@@ -247,31 +250,24 @@
                     const emptyMsg = document.querySelector('.empty-msg');
                     if(emptyMsg) emptyMsg.remove();
 
-                    // 카드 컨테이너 생성
                     const newCard = document.createElement('div');
                     newCard.className = 'photo-card';
                     
-                    // 랜덤 각도 설정 (-4 ~ 4도)
                     const randomRotate = (Math.random() * 8 - 4).toFixed(2);
                     newCard.style.transform = `rotate(${randomRotate}deg)`;
 
-                    // 현재 날짜 생성
                     const now = new Date();
                     const dateString = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
 
-                    // 카드 내부 구조
                     newCard.innerHTML = `
                         <div class="pin"></div>
                         <button class="delete-btn" onclick="removeCard(event, this)">✕</button>
                         <img src="${e.target.result}" alt="추억 사진">
-                        <div class="card-memo" contenteditable="true" spellcheck="false">기록을 남겨보세요..</div>
+                        <input type="text" class="memo-input" placeholder="기록을 남겨보세요.." spellcheck="false">
                         <div class="card-date">${dateString}</div>
                     `;
 
-                    // 보드 맨 앞에 추가
                     board.prepend(newCard);
-                    
-                    // 입력창 초기화
                     input.value = "";
                 };
 
@@ -280,7 +276,7 @@
         }
 
         function removeCard(event, btn) {
-            event.stopPropagation(); // 카드 클릭 이벤트 방지
+            event.stopPropagation();
             const card = btn.parentElement;
             card.style.transform = 'scale(0.8) translateY(20px)';
             card.style.opacity = '0';
@@ -288,7 +284,7 @@
                 card.remove();
                 if (document.querySelectorAll('.photo-card').length === 0) {
                     const board = document.getElementById('board');
-                    board.innerHTML = '<p class="empty-msg">아직 등록된 추억이 없습니다.</p>';
+                    board.innerHTML = '<p class="empty-msg">아직 등록된 사진이 없습니다.</p>';
                 }
             }, 300);
         }
