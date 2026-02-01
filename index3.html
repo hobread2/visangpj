@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리들의 소중한 추억 보드</title>
+    <!-- 구글 폰트 적용 (나눔펜글씨, 고운돋움) -->
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --board-bg: #c19a6b;
+            --cork-texture: #b0895a;
+            --text-color: #4e342e;
+            --accent-color: #d84315;
+        }
+
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: var(--board-bg);
+            /* 코르크 질감 패턴 */
+            background-image: 
+                repeating-radial-gradient(circle at 0 0, transparent 0, var(--board-bg) 10px),
+                repeating-linear-gradient(var(--cork-texture) 0.5px, transparent 1px);
+            background-size: 20px 20px;
+            margin: 0;
+            padding: 40px 15px; /* 모바일 대응을 위해 좌우 패딩 소폭 축소 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Nanum Pen Script', cursive;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        /* 업로드 구역 디자인 */
+        .upload-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        #fileInput { display: none; }
+
+        /* 게시판 그리드 */
+        #board {
+            display: grid;
+            /* 데스크톱: 자동 채우기 */
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            width: 100%;
+            perspective: 1000px;
+        }
+
+        /* 폴라로이드 카드 디자인 */
+        .photo-card {
+            background: #fff;
+            padding: 10px 10px 30px 10px;
+            box-shadow: 5px 8px 15px rgba(0,0,0,0.2);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeIn 0.6s ease-out backwards;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .photo-card:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            z-index: 10;
+            box-shadow: 10px 20px 30px rgba(0,0,0,0.3);
+        }
+
+        .photo-card img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border: 1px solid #f0f0f0;
+            margin-bottom: 10px;
+        }
+
+        /* 캡션/메모 스타일 */
+        .card-memo {
+            font-family: 'Nanum Pen Script', cursive;
+            font-size: 1.2rem;
+            color: #333;
+            margin-top: 2px;
+            border-bottom: 1px solid #eee;
+            display: inline-block;
+            width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            outline: none;
+        }
+
+        .card-date {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 0.65rem;
+            color: #999;
+        }
+
+        /* 압정 디자인 */
+        .pin {
+            width: 18px;
+            height: 18px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            z-index: 2;
+        }
+        .pin::after {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+        }
+
+        .empty-msg {
+            grid-column: 1 / -1;
+            padding: 80px 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 1.1rem;
+        }
+
+        /* 삭제 버튼 */
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.1);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .photo-card:hover .delete-btn {
+            display: flex;
+        }
+
+        .delete-btn:hover {
+            background: var(--accent-color);
+        }
+
+        /* 모바일 대응: 한 줄에 2개씩 노출 */
+        @media (max-width: 600px) {
+            #board {
+                grid-template-columns: repeat(2, 1fr); /* 2열 고정 */
+                gap: 15px; /* 모바일에서는 간격을 조금 좁힘 */
+            }
+            .photo-card {
+                padding: 8px 8px 25px 8px; /* 카드 안쪽 여백 축소 */
+            }
+            .card-memo {
+                font-size: 1.1rem;
+            }
+            h1 { font-size: 2.8rem; }
+            .subtitle { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Moments.</h1>
+        <p class="subtitle">동료와의 소중한 기록들을 핀으로 고정해보세요</p>
+
+        <div class="upload-section" onclick="document.getElementById('fileInput').click();">
+            <span class="upload-icon">📷</span>
+            <strong>추억 추가하기</strong>
+            <p style="margin: 5px 0 0; font-size: 0.85rem; opacity: 0.8;">터치하여 사진을 선택하세요</p>
+            <input type="file" id="fileInput" accept="image/*" onchange="uploadPhoto(this)">
+        </div>
+
+        <div id="board">
+            <p class="empty-msg">아직 등록된 추억이 없습니다.</p>
+        </div>
+    </div>
+
+    <script>
+        function uploadPhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const board = document.getElementById('board');
+                    
+                    const emptyMsg = document.querySelector('.empty-msg');
+                    if(emptyMsg) emptyMsg.remove();
+
+                    // 카드 컨테이너 생성
+                    const newCard = document.createElement('div');
+                    newCard.className = 'photo-card';
+                    
+                    // 랜덤 각도 설정 (-4 ~ 4도)
+                    const randomRotate = (Math.random() * 8 - 4).toFixed(2);
+                    newCard.style.transform = `rotate(${randomRotate}deg)`;
+
+                    // 현재 날짜 생성
+                    const now = new Date();
+                    const dateString = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
+
+                    // 카드 내부 구조
+                    newCard.innerHTML = `
+                        <div class="pin"></div>
+                        <button class="delete-btn" onclick="removeCard(event, this)">✕</button>
+                        <img src="${e.target.result}" alt="추억 사진">
+                        <div class="card-memo" contenteditable="true" spellcheck="false">기록을 남겨보세요..</div>
+                        <div class="card-date">${dateString}</div>
+                    `;
+
+                    // 보드 맨 앞에 추가
+                    board.prepend(newCard);
+                    
+                    // 입력창 초기화
+                    input.value = "";
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeCard(event, btn) {
+            event.stopPropagation(); // 카드 클릭 이벤트 방지
+            const card = btn.parentElement;
+            card.style.transform = 'scale(0.8) translateY(20px)';
+            card.style.opacity = '0';
+            setTimeout(() => {
+                card.remove();
+                if (document.querySelectorAll('.photo-card').length === 0) {
+                    const board = document.getElementById('board');
+                    board.innerHTML = '<p class="empty-msg">아직 등록된 추억이 없습니다.</p>';
+                }
+            }, 300);
+        }
+    </script>
+</body>
+</html>
