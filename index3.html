@@ -12,6 +12,7 @@
             --cork-texture: #b0895a;
             --text-color: #4e342e;
             --accent-color: #d84315;
+            --notice-bg: rgba(255, 249, 196, 0.95);
         }
 
         body {
@@ -46,9 +47,43 @@
         }
 
         .subtitle {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.1rem;
+        }
+
+        /* 공지사항 스타일: 내부 문구 모두 검정색으로 변경 */
+        .notice-box {
+            background: var(--notice-bg);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            text-align: left;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.1); /* 테두리도 검정 계열로 조정 */
+        }
+
+        .notice-box::before {
+            content: '📢 공지사항';
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #000; /* 제목 검정색 */
+            font-size: 1.1rem;
+        }
+
+        .notice-content {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #000; /* 본문 검정색 */
+        }
+
+        .notice-highlight {
+            font-weight: bold;
+            color: #000; /* 강조 문구 검정색 */
+            text-decoration: underline;
+            text-underline-offset: 3px;
         }
 
         /* 업로드 구역 디자인 */
@@ -84,12 +119,13 @@
             gap: 25px;
             width: 100%;
             perspective: 1000px;
+            align-items: start;
         }
 
         /* 폴라로이드 카드 디자인 */
         .photo-card {
             background: #fff;
-            padding: 10px 10px 40px 10px; /* 아래쪽 여백 확보 */
+            padding: 10px 10px 45px 10px;
             box-shadow: 5px 8px 15px rgba(0,0,0,0.2);
             position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -113,10 +149,11 @@
 
         .photo-card img {
             width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
+            height: auto;
+            display: block;
             border: 1px solid #f0f0f0;
             margin-bottom: 10px;
+            object-fit: contain;
         }
 
         /* 인풋 태그 스타일링 */
@@ -204,14 +241,14 @@
             background: var(--accent-color);
         }
 
-        /* 모바일 대응: 한 줄에 2개씩 노출 */
+        /* 모바일 대응 */
         @media (max-width: 600px) {
             #board {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 15px;
             }
             .photo-card {
-                padding: 8px 8px 30px 8px;
+                padding: 8px 8px 35px 8px;
             }
             .memo-input {
                 font-size: 1.2rem;
@@ -226,6 +263,14 @@
     <div class="container">
         <h1>Moments.</h1>
         <p class="subtitle">동료와의 소중한 기록들을 핀으로 고정해보세요</p>
+
+        <!-- 공지사항 섹션 (모든 텍스트 검정색 적용) -->
+        <div class="notice-box">
+            <div class="notice-content">
+                1. 사진 업로드 시 메모란에 <span class="notice-highlight">본인 이름과 소속 Cell</span>을 반드시 표기해주세요.<br>
+                2. 업로드해주신 분들 중 추첨(약 5분)을 통해 <span class="notice-highlight">당첨자 소속 Cell 전원</span>에게 지원금 또는 기프티콘 등의 혜택을 드립니다!
+            </div>
+        </div>
 
         <div class="upload-section" onclick="document.getElementById('fileInput').click();">
             <span class="upload-icon">📷</span>
@@ -263,7 +308,7 @@
                         <div class="pin"></div>
                         <button class="delete-btn" onclick="removeCard(event, this)">✕</button>
                         <img src="${e.target.result}" alt="추억 사진">
-                        <input type="text" class="memo-input" placeholder="기록을 남겨보세요.." spellcheck="false">
+                        <input type="text" class="memo-input" placeholder="이름 / 소속 Cell 입력" spellcheck="false">
                         <div class="card-date">${dateString}</div>
                     `;
 
