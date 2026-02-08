@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나는 동료가 나의 성장을 위한 동반자임을 믿는다</title>
+    <title>Moments</title>
     <!-- 구글 폰트 적용 (나눔펜글씨, 고운돋움) -->
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
     <style>
@@ -36,9 +36,6 @@
             max-width: 900px;
             width: 100%;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         h1 {
@@ -105,6 +102,7 @@
             background: linear-gradient(to top, #b3e5fc 40%, transparent 40%);
         }
 
+        /* 업로드 섹션 디자인 개선: 더 콤팩트하고 세련된 버튼 스타일 */
         .upload-section {
             display: inline-flex;
             align-items: center;
@@ -113,9 +111,9 @@
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px; 
+            border-radius: 50px; /* 둥근 캡슐 형태 */
             padding: 12px 30px;
-            margin-bottom: 60px; /* 게시판과의 간격 추가 */
+            margin-bottom: 50px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -128,51 +126,61 @@
             border-color: rgba(255, 255, 255, 0.6);
         }
 
-        .upload-text-group { text-align: left; }
-        .upload-icon { font-size: 24px; }
-        .upload-title { display: block; font-weight: bold; font-size: 1rem; color: #fff; }
-        .upload-desc { display: block; font-size: 0.75rem; color: rgba(255, 255, 255, 0.8); }
+        .upload-text-group {
+            text-align: left;
+        }
+
+        .upload-icon {
+            font-size: 24px;
+        }
+
+        .upload-title {
+            display: block;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .upload-desc {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
 
         #fileInput { display: none; }
 
-        /* Masonry 레이아웃 보정 */
+        /* 게시판 그리드 */
         #board {
-            column-count: 3;
-            column-gap: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
             width: 100%;
-            position: relative;
-            min-height: 300px;
-            padding-top: 20px; /* 최상단 핀이 잘리지 않도록 여백 추가 */
-        }
-
-        @media (max-width: 768px) {
-            #board { column-count: 2; column-gap: 15px; }
+            perspective: 1000px;
+            align-items: start;
         }
 
         /* 폴라로이드 카드 디자인 */
         .photo-card {
-            display: block; 
-            width: 100%;
             background: #fff;
-            padding: 12px 12px 50px 12px;
+            padding: 10px 10px 45px 10px;
             box-shadow: 5px 8px 15px rgba(0,0,0,0.2);
             position: relative;
-            margin-bottom: 40px; /* 카드 사이 수직 간격을 충분히 벌림 (핀 겹침 방지) */
-            transition: all 0.3s ease;
-            animation: fadeIn 0.5s ease-out backwards;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeIn 0.6s ease-out backwards;
             user-select: none;
-            box-sizing: border-box;
-            break-inside: avoid;
-            -webkit-column-break-inside: avoid;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer; /* 클릭 가능 표시 */
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            from { opacity: 0; transform: scale(0.8) translateY(20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .photo-card:hover {
-            transform: scale(1.03) !important;
+            transform: scale(1.05) rotate(0deg) !important;
             z-index: 10;
             box-shadow: 10px 20px 30px rgba(0,0,0,0.3);
         }
@@ -181,33 +189,35 @@
             width: 100%;
             height: auto;
             display: block;
-            border: 1px solid #eee;
-            margin-bottom: 12px;
+            border: 1px solid #f0f0f0;
+            margin-bottom: 10px;
+            object-fit: contain;
         }
 
         .memo-input {
             font-family: 'Nanum Pen Script', cursive;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: #333;
             width: 90%;
             border: none;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #eee;
             background: transparent;
             text-align: center;
             outline: none;
-            padding: 4px 0;
-            display: block;
-            margin: 0 auto;
+            padding: 2px 0;
+            margin-top: 5px;
         }
 
-        .memo-input::placeholder { color: #ccc; }
+        .memo-input::placeholder {
+            color: #ccc;
+        }
 
         .card-date {
             position: absolute;
-            bottom: 10px;
-            right: 15px;
-            font-size: 0.7rem;
-            color: #aaa;
+            bottom: 8px;
+            right: 12px;
+            font-size: 0.65rem;
+            color: #999;
         }
 
         .pin {
@@ -216,7 +226,7 @@
             background-color: var(--accent-color);
             border-radius: 50%;
             position: absolute;
-            top: -12px; /* 핀 위치를 약간 더 위로 조정하여 카드와 분리감 제공 */
+            top: -8px;
             left: 50%;
             transform: translateX(-50%);
             box-shadow: 0 2px 4px rgba(0,0,0,0.4);
@@ -225,23 +235,20 @@
 
         .pin::after {
             content: '';
-            width: 5px; height: 5px;
+            width: 5px;
+            height: 5px;
             background: rgba(255,255,255,0.4);
             border-radius: 50%;
-            position: absolute; top: 3px; left: 3px;
+            position: absolute;
+            top: 3px;
+            left: 3px;
         }
 
-        /* 사진 없을 때 정중앙 정렬 */
         .empty-msg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            grid-column: 1 / -1;
+            padding: 80px 0;
             color: rgba(255,255,255,0.6);
-            font-size: 1.2rem;
-            width: 100%;
-            text-align: center;
-            pointer-events: none;
+            font-size: 1.1rem;
         }
 
         .delete-btn {
@@ -252,8 +259,8 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             font-size: 12px;
             cursor: pointer;
             display: none;
@@ -262,8 +269,87 @@
             z-index: 5;
         }
 
-        .photo-card:hover .delete-btn { display: flex; }
-        .delete-btn:hover { background: var(--accent-color); }
+        .photo-card:hover .delete-btn {
+            display: flex;
+        }
+
+        .delete-btn:hover {
+            background: var(--accent-color);
+        }
+
+        /* --- 추가된 라이트박스(확대보기) 스타일 --- */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none; /* 기본 숨김 */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-card {
+            background: #fff;
+            padding: 15px 15px 50px 15px;
+            box-shadow: 0 0 50px rgba(255,255,255,0.1);
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .lightbox-overlay.active .lightbox-card {
+            transform: scale(1);
+        }
+
+        .lightbox-card img {
+            max-width: 100%;
+            max-height: 75vh;
+            object-fit: contain;
+            border: 1px solid #f0f0f0;
+        }
+
+        .lightbox-text {
+            font-family: 'Nanum Pen Script', cursive;
+            font-size: 2rem;
+            color: #333;
+            margin-top: 15px;
+            text-align: center;
+        }
+        /* -------------------------------------- */
+
+        @media (max-width: 600px) {
+            #board {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            .photo-card {
+                padding: 8px 8px 35px 8px;
+            }
+            .memo-input {
+                font-size: 1.2rem;
+            }
+            h1 { font-size: 2.8rem; }
+            .subtitle { font-size: 0.95rem; margin-bottom: 40px; } 
+            .notice-box { margin-bottom: 35px; width: 90%; }
+            .notice-content { font-size: 0.75rem; }
+            .upload-section { padding: 10px 20px; }
+        }
     </style>
 </head>
 <body>
@@ -280,6 +366,7 @@
             </div>
         </div>
 
+        <!-- 더 슬림하고 세련되게 변경된 업로드 버튼 -->
         <div class="upload-section" onclick="document.getElementById('fileInput').click();">
             <span class="upload-icon">📸</span>
             <div class="upload-text-group">
@@ -291,6 +378,15 @@
 
         <div id="board">
             <p class="empty-msg">아직 등록된 사진이 없습니다.</p>
+        </div>
+    </div>
+
+    <!-- 라이트박스 (확대 보기용) 요소 추가 -->
+    <div id="lightboxOverlay" class="lightbox-overlay" onclick="closeLightbox()">
+        <div class="lightbox-card" onclick="event.stopPropagation()"> <!-- 카드 클릭 시 닫히지 않게 하거나, 닫히게 하려면 제거 -->
+            <div class="pin"></div>
+            <img id="lightboxImg" src="" alt="확대 이미지">
+            <div id="lightboxText" class="lightbox-text"></div>
         </div>
     </div>
 
@@ -308,11 +404,14 @@
                     const newCard = document.createElement('div');
                     newCard.className = 'photo-card';
                     
-                    const randomRotate = (Math.random() * 6 - 3).toFixed(2);
+                    const randomRotate = (Math.random() * 8 - 4).toFixed(2);
                     newCard.style.transform = `rotate(${randomRotate}deg)`;
 
                     const now = new Date();
                     const dateString = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
+
+                    // 더블 클릭 이벤트 추가: ondblclick="openLightbox(this)"
+                    newCard.setAttribute('ondblclick', 'openLightbox(this)');
 
                     newCard.innerHTML = `
                         <div class="pin"></div>
@@ -333,7 +432,7 @@
         function removeCard(event, btn) {
             event.stopPropagation();
             const card = btn.parentElement;
-            card.style.transform = 'scale(0.8)';
+            card.style.transform = 'scale(0.8) translateY(20px)';
             card.style.opacity = '0';
             setTimeout(() => {
                 card.remove();
@@ -343,6 +442,35 @@
                 }
             }, 300);
         }
+
+        // --- 라이트박스 관련 스크립트 추가 ---
+        function openLightbox(card) {
+            const overlay = document.getElementById('lightboxOverlay');
+            const img = document.getElementById('lightboxImg');
+            const text = document.getElementById('lightboxText');
+            
+            // 클릭된 카드의 이미지 소스와 텍스트 내용을 가져옴
+            const cardImgSrc = card.querySelector('img').src;
+            const cardTextValue = card.querySelector('.memo-input').value;
+
+            img.src = cardImgSrc;
+            text.innerText = cardTextValue || " "; // 텍스트가 없으면 공백
+
+            overlay.style.display = 'flex';
+            // 약간의 딜레이 후 active 클래스를 추가해야 transition 효과가 먹힘
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const overlay = document.getElementById('lightboxOverlay');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300); // transition 시간(0.3s)과 맞춤
+        }
+        // ------------------------------------
     </script>
 </body>
 </html>
