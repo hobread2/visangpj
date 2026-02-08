@@ -46,17 +46,17 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* 부제목 스타일: 하단 여백을 20px에서 45px로 확장하여 간격 확보 */
+        /* 부제목 스타일: 요청하신 대로 하단 여백을 45px로 유지 */
         .subtitle {
             margin-bottom: 45px; 
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.1rem;
         }
 
-        /* 공지사항 스타일 */
+        /* 공지사항 스타일: 글씨 크기 축소 버전 복구 */
         .notice-box {
             background: var(--notice-bg);
-            padding: 20px;
+            padding: 15px 20px;
             margin-bottom: 40px;
             border-radius: 12px;
             text-align: left;
@@ -69,22 +69,23 @@
             content: '📢 공지사항';
             display: block;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: #000;
-            font-size: 1.1rem;
+            font-size: 0.9rem; /* 제목 크기 축소 */
         }
 
         .notice-content {
-            font-size: 0.95rem;
-            line-height: 1.7;
-            color: #000;
+            font-size: 0.82rem; /* 본문 크기 작게 복구 */
+            line-height: 1.6;
+            color: #333;
+            word-break: keep-all;
         }
 
         .notice-highlight {
             font-weight: bold;
             color: #000;
             text-decoration: underline;
-            text-underline-offset: 3px;
+            text-underline-offset: 2px;
         }
 
         /* 업로드 구역 디자인 */
@@ -252,9 +253,9 @@
                 font-size: 1.2rem;
             }
             h1 { font-size: 2.8rem; }
-            /* 모바일에서도 적절한 간격 유지 */
             .subtitle { font-size: 0.95rem; margin-bottom: 35px; } 
             .notice-box { margin-bottom: 30px; }
+            .notice-content { font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -267,14 +268,14 @@
         <div class="notice-box">
             <div class="notice-content">
                 1. 사진 업로드 시 메모란에 <span class="notice-highlight">본인 이름과 소속 Cell</span>을 반드시 표기해주세요.<br>
-                2. 업로드해주신 분들 중 추첨(약 5분)을 통해 <span class="notice-highlight">당첨자 소속 Cell 전원</span>에게 지원금 또는 기프티콘 등의 혜택을 드립니다!
+                2. 업로드해주신 분들 중 추첨(약 5분)을 통해 <span class="notice-highlight">당첨자 소속 Cell 전원</span>에게 혜택을 드립니다!
             </div>
         </div>
 
         <div class="upload-section" onclick="document.getElementById('fileInput').click();">
             <span class="upload-icon">📷</span>
             <strong>추억 추가하기</strong>
-            <p style="margin: 5px 0 0; font-size: 0.85rem; opacity: 0.8;">터치하여 사진을 선택하세요</p>
+            <p style="margin: 5px 0 0; font-size: 0.8rem; opacity: 0.8;">터치하여 사진을 선택하세요</p>
             <input type="file" id="fileInput" accept="image/*" onchange="uploadPhoto(this)">
         </div>
 
