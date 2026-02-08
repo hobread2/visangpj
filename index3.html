@@ -52,38 +52,39 @@
             font-size: 1.1rem;
         }
 
-        /* 공지사항 스타일: 내부 문구 모두 검정색으로 변경 */
+        /* 공지사항 스타일: 글씨 크기 축소 조정 */
         .notice-box {
             background: var(--notice-bg);
-            padding: 20px;
+            padding: 15px 20px;
             margin-bottom: 30px;
             border-radius: 12px;
             text-align: left;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             position: relative;
-            border: 1px solid rgba(0, 0, 0, 0.1); /* 테두리도 검정 계열로 조정 */
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .notice-box::before {
             content: '📢 공지사항';
             display: block;
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #000; /* 제목 검정색 */
-            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #000;
+            font-size: 0.9rem; /* 제목 크기 축소 */
         }
 
         .notice-content {
-            font-size: 0.95rem;
-            line-height: 1.7;
-            color: #000; /* 본문 검정색 */
+            font-size: 0.82rem; /* 본문 크기 더 작게 조정 */
+            line-height: 1.6;
+            color: #333; /* 약간 부드러운 검정 */
+            word-break: keep-all;
         }
 
         .notice-highlight {
             font-weight: bold;
-            color: #000; /* 강조 문구 검정색 */
+            color: #000;
             text-decoration: underline;
-            text-underline-offset: 3px;
+            text-underline-offset: 2px;
         }
 
         /* 업로드 구역 디자인 */
@@ -156,7 +157,6 @@
             object-fit: contain;
         }
 
-        /* 인풋 태그 스타일링 */
         .memo-input {
             font-family: 'Nanum Pen Script', cursive;
             font-size: 1.4rem;
@@ -183,7 +183,6 @@
             color: #999;
         }
 
-        /* 압정 디자인 */
         .pin {
             width: 18px;
             height: 18px;
@@ -196,6 +195,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.4);
             z-index: 2;
         }
+
         .pin::after {
             content: '';
             width: 5px;
@@ -214,7 +214,6 @@
             font-size: 1.1rem;
         }
 
-        /* 삭제 버튼 */
         .delete-btn {
             position: absolute;
             top: 5px;
@@ -241,7 +240,6 @@
             background: var(--accent-color);
         }
 
-        /* 모바일 대응 */
         @media (max-width: 600px) {
             #board {
                 grid-template-columns: repeat(2, 1fr);
@@ -255,6 +253,7 @@
             }
             h1 { font-size: 2.8rem; }
             .subtitle { font-size: 0.95rem; }
+            .notice-content { font-size: 0.75rem; } /* 모바일에서 조금 더 축소 */
         }
     </style>
 </head>
@@ -264,18 +263,17 @@
         <h1>Moments.</h1>
         <p class="subtitle">동료와의 소중한 기록들을 핀으로 고정해보세요</p>
 
-        <!-- 공지사항 섹션 (모든 텍스트 검정색 적용) -->
         <div class="notice-box">
             <div class="notice-content">
                 1. 사진 업로드 시 메모란에 <span class="notice-highlight">본인 이름과 소속 Cell</span>을 반드시 표기해주세요.<br>
-                2. 업로드해주신 분들 중 추첨(약 5분)을 통해 <span class="notice-highlight">당첨자 소속 Cell 전원</span>에게 지원금 또는 기프티콘 등의 혜택을 드립니다!
+                2. 업로드해주신 분들 중 추첨(약 5분)을 통해 <span class="notice-highlight">당첨자 소속 Cell 전원</span>에게 혜택을 드립니다!
             </div>
         </div>
 
         <div class="upload-section" onclick="document.getElementById('fileInput').click();">
             <span class="upload-icon">📷</span>
             <strong>추억 추가하기</strong>
-            <p style="margin: 5px 0 0; font-size: 0.85rem; opacity: 0.8;">터치하여 사진을 선택하세요</p>
+            <p style="margin: 5px 0 0; font-size: 0.8rem; opacity: 0.8;">터치하여 사진을 선택하세요</p>
             <input type="file" id="fileInput" accept="image/*" onchange="uploadPhoto(this)">
         </div>
 
