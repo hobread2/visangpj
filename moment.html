@@ -102,49 +102,52 @@
             background: linear-gradient(to top, #b3e5fc 40%, transparent 40%);
         }
 
-        /* 업로드 섹션 디자인 개선: 더 콤팩트하고 세련된 버튼 스타일 */
+        /* 개선된 업로드 섹션: 세련된 캡슐형 플로팅 버튼 스타일 */
         .upload-section {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px; /* 둥근 캡슐 형태 */
-            padding: 12px 30px;
-            margin-bottom: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 10px 25px;
+            margin-bottom: 60px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: white;
         }
 
         .upload-section:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .upload-icon {
+            font-size: 20px;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
         }
 
         .upload-text-group {
             text-align: left;
         }
 
-        .upload-icon {
-            font-size: 24px;
-        }
-
         .upload-title {
             display: block;
             font-weight: bold;
-            font-size: 1rem;
-            color: #fff;
+            font-size: 0.95rem;
+            letter-spacing: -0.02em;
         }
 
         .upload-desc {
             display: block;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.7rem;
+            opacity: 0.8;
         }
 
         #fileInput { display: none; }
@@ -153,7 +156,7 @@
         #board {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
+            gap: 30px;
             width: 100%;
             perspective: 1000px;
             align-items: start;
@@ -163,7 +166,7 @@
         .photo-card {
             background: #fff;
             padding: 10px 10px 45px 10px;
-            box-shadow: 5px 8px 15px rgba(0,0,0,0.2);
+            box-shadow: 5px 10px 20px rgba(0,0,0,0.15);
             position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             animation: fadeIn 0.6s ease-out backwards;
@@ -174,61 +177,60 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8) translateY(20px); }
+            from { opacity: 0; transform: scale(0.9) translateY(30px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .photo-card:hover {
             transform: scale(1.05) rotate(0deg) !important;
             z-index: 10;
-            box-shadow: 10px 20px 30px rgba(0,0,0,0.3);
+            box-shadow: 10px 20px 40px rgba(0,0,0,0.25);
         }
 
         .photo-card img {
             width: 100%;
             height: auto;
             display: block;
-            border: 1px solid #f0f0f0;
-            margin-bottom: 10px;
+            border: 1px solid #f9f9f9;
+            margin-bottom: 12px;
             object-fit: contain;
         }
 
         .memo-input {
             font-family: 'Nanum Pen Script', cursive;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             color: #333;
-            width: 90%;
+            width: 85%;
             border: none;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f0f0f0;
             background: transparent;
             text-align: center;
             outline: none;
-            padding: 2px 0;
-            margin-top: 5px;
+            padding: 4px 0;
         }
 
         .memo-input::placeholder {
-            color: #ccc;
+            color: #ddd;
         }
 
         .card-date {
             position: absolute;
-            bottom: 8px;
-            right: 12px;
+            bottom: 10px;
+            right: 15px;
             font-size: 0.65rem;
-            color: #999;
+            color: #bbb;
         }
 
         .pin {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             background-color: var(--accent-color);
             border-radius: 50%;
             position: absolute;
             top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             z-index: 2;
         }
 
@@ -245,27 +247,28 @@
 
         .empty-msg {
             grid-column: 1 / -1;
-            padding: 80px 0;
-            color: rgba(255,255,255,0.6);
+            padding: 100px 0;
+            color: rgba(255,255,255,0.5);
             font-size: 1.1rem;
         }
 
         .delete-btn {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.1);
-            color: white;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.05);
+            color: #ccc;
             border: none;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 12px;
+            width: 24px;
+            height: 24px;
+            font-size: 10px;
             cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 5;
+            transition: all 0.2s;
         }
 
         .photo-card:hover .delete-btn {
@@ -274,6 +277,7 @@
 
         .delete-btn:hover {
             background: var(--accent-color);
+            color: white;
         }
 
         @media (max-width: 600px) {
@@ -289,9 +293,7 @@
             }
             h1 { font-size: 2.8rem; }
             .subtitle { font-size: 0.95rem; margin-bottom: 40px; } 
-            .notice-box { margin-bottom: 35px; width: 90%; }
-            .notice-content { font-size: 0.75rem; }
-            .upload-section { padding: 10px 20px; }
+            .upload-section { padding: 8px 20px; margin-bottom: 40px; }
         }
     </style>
 </head>
@@ -309,12 +311,12 @@
             </div>
         </div>
 
-        <!-- 더 슬림하고 세련되게 변경된 업로드 버튼 -->
+        <!-- 슬림하게 디자인된 업로드 섹션 -->
         <div class="upload-section" onclick="document.getElementById('fileInput').click();">
             <span class="upload-icon">📸</span>
             <div class="upload-text-group">
                 <span class="upload-title">추억 추가하기</span>
-                <span class="upload-desc">터치하여 사진 선택</span>
+                <span class="upload-desc">이곳을 터치하여 업로드</span>
             </div>
             <input type="file" id="fileInput" accept="image/*" onchange="uploadPhoto(this)">
         </div>
@@ -338,7 +340,8 @@
                     const newCard = document.createElement('div');
                     newCard.className = 'photo-card';
                     
-                    const randomRotate = (Math.random() * 8 - 4).toFixed(2);
+                    // -5도에서 5도 사이의 랜덤 회전으로 자연스러운 느낌 부여
+                    const randomRotate = (Math.random() * 10 - 5).toFixed(2);
                     newCard.style.transform = `rotate(${randomRotate}deg)`;
 
                     const now = new Date();
@@ -348,7 +351,7 @@
                         <div class="pin"></div>
                         <button class="delete-btn" onclick="removeCard(event, this)">✕</button>
                         <img src="${e.target.result}" alt="추억 사진">
-                        <input type="text" class="memo-input" placeholder="이름 / 소속 Cell 입력" spellcheck="false">
+                        <input type="text" class="memo-input" placeholder="이름 / Cell 입력" spellcheck="false">
                         <div class="card-date">${dateString}</div>
                     `;
 
