@@ -12,7 +12,8 @@
             --cork-texture: #b0895a;
             --text-color: #4e342e;
             --accent-color: #d84315;
-            --notice-bg: rgba(255, 249, 196, 0.95);
+            --notice-bg: #fffbe6; /* 더 따뜻한 메모지 색상 */
+            --notice-accent: #0288d1; /* 빨간색 대신 하늘색 계열 추가 */
         }
 
         body {
@@ -46,46 +47,62 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* 부제목 스타일: 요청하신 대로 하단 여백을 45px로 유지 */
         .subtitle {
-            margin-bottom: 45px; 
+            margin-bottom: 50px; 
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.1rem;
         }
 
-        /* 공지사항 스타일: 글씨 크기 축소 버전 복구 */
+        /* 공지사항 디자인 개선: 마스킹 테이프로 붙인 메모지 느낌 */
         .notice-box {
             background: var(--notice-bg);
-            padding: 15px 20px;
-            margin-bottom: 40px;
-            border-radius: 12px;
+            padding: 25px 20px 20px 20px;
+            margin: 0 auto 50px auto;
+            max-width: 600px;
+            border-radius: 2px;
             text-align: left;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 2px 5px 15px rgba(0,0,0,0.1);
             position: relative;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            transform: rotate(-0.5deg); /* 미세하게 기울여 자연스러움 추가 */
         }
 
+        /* 마스킹 테이프 효과 */
         .notice-box::before {
-            content: '📢 공지사항';
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px);
+            border-left: 2px dashed rgba(0,0,0,0.05);
+            border-right: 2px dashed rgba(0,0,0,0.05);
+            z-index: 1;
+        }
+
+        .notice-title {
             display: block;
             font-weight: bold;
-            margin-bottom: 8px;
-            color: #000;
-            font-size: 0.9rem; /* 제목 크기 축소 */
+            margin-bottom: 10px;
+            color: var(--notice-accent); /* 하늘색으로 변경 */
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(2, 136, 209, 0.2); /* 하늘색 점선 */
+            padding-bottom: 5px;
         }
 
         .notice-content {
-            font-size: 0.82rem; /* 본문 크기 작게 복구 */
-            line-height: 1.6;
-            color: #333;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            color: #444;
             word-break: keep-all;
         }
 
         .notice-highlight {
             font-weight: bold;
             color: #000;
-            text-decoration: underline;
-            text-underline-offset: 2px;
+            background: linear-gradient(to top, #b3e5fc 40%, transparent 40%); /* 형광펜 효과도 하늘색 계열로 변경 */
         }
 
         /* 업로드 구역 디자인 */
@@ -253,8 +270,8 @@
                 font-size: 1.2rem;
             }
             h1 { font-size: 2.8rem; }
-            .subtitle { font-size: 0.95rem; margin-bottom: 35px; } 
-            .notice-box { margin-bottom: 30px; }
+            .subtitle { font-size: 0.95rem; margin-bottom: 40px; } 
+            .notice-box { margin-bottom: 35px; width: 90%; }
             .notice-content { font-size: 0.75rem; }
         }
     </style>
@@ -265,10 +282,12 @@
         <h1>Moments.</h1>
         <p class="subtitle">동료와의 소중한 기록들을 핀으로 고정해보세요</p>
 
+        <!-- 디자인이 개선된 공지사항 영역 (하늘색 포인트 적용) -->
         <div class="notice-box">
+            <span class="notice-title">📢 Notice</span>
             <div class="notice-content">
                 1. 사진 업로드 시 메모란에 <span class="notice-highlight">본인 이름과 소속 Cell</span>을 반드시 표기해주세요.<br>
-                2. 업로드해주신 분들 중 추첨(약 5분)을 통해 <span class="notice-highlight">당첨자 소속 Cell 전원</span>에게 혜택을 드립니다!
+                2. 업로드해주신 분들 중 추첨을 통해 <span class="notice-highlight">당첨자 소속 Cell 전원</span>에게 깜짝 혜택을 드립니다!
             </div>
         </div>
 
