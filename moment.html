@@ -102,7 +102,7 @@
             background: linear-gradient(to top, #b3e5fc 40%, transparent 40%);
         }
 
-        /* 업로드 섹션 디자인 개선: 더 콤팩트하고 세련된 버튼 스타일 */
+        /* 업로드 섹션 디자인 개선 */
         .upload-section {
             display: inline-flex;
             align-items: center;
@@ -111,7 +111,7 @@
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50px; /* 둥근 캡슐 형태 */
+            border-radius: 50px;
             padding: 12px 30px;
             margin-bottom: 50px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -171,7 +171,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            cursor: pointer; /* 클릭 가능 표시 */
+            cursor: pointer;
         }
 
         @keyframes fadeIn {
@@ -206,8 +206,6 @@
             outline: none;
             padding: 2px 0;
             margin-top: 5px;
-            
-            /* 수정됨: 텍스트가 길어지면 ...으로 표시 */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -290,7 +288,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.9);
-            display: none; /* 기본 숨김 */
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 9999;
@@ -316,7 +314,7 @@
             transform: scale(0.9);
             transition: transform 0.3s ease;
             position: relative;
-            overflow-y: auto; /* 내용이 너무 길면 카드 내부 스크롤 */
+            overflow-y: auto;
         }
 
         .lightbox-overlay.active .lightbox-card {
@@ -325,7 +323,7 @@
 
         .lightbox-card img {
             max-width: 100%;
-            max-height: 70vh; /* 텍스트 공간 확보를 위해 이미지 높이 제한 조정 */
+            max-height: 70vh;
             object-fit: contain;
             border: 1px solid #f0f0f0;
         }
@@ -336,15 +334,12 @@
             color: #333;
             margin-top: 15px;
             text-align: center;
-            
-            /* 수정됨: 긴 텍스트 줄바꿈 및 전체 표시 */
             width: 95%;
-            word-break: keep-all; /* 단어 단위 줄바꿈 */
+            word-break: keep-all;
             word-wrap: break-word;
             line-height: 1.4;
             white-space: normal;
         }
-        /* -------------------------------------- */
 
         @media (max-width: 600px) {
             #board {
@@ -362,11 +357,7 @@
             .notice-box { margin-bottom: 35px; width: 90%; }
             .notice-content { font-size: 0.75rem; }
             .upload-section { padding: 10px 20px; }
-            
-            /* 모바일에서 라이트박스 텍스트 사이즈 조정 */
-            .lightbox-text {
-                font-size: 1.6rem;
-            }
+            .lightbox-text { font-size: 1.6rem; }
         }
     </style>
 </head>
@@ -398,7 +389,7 @@
         </div>
     </div>
 
-    <!-- 라이트박스 (확대 보기용) 요소 추가 -->
+    <!-- 라이트박스 -->
     <div id="lightboxOverlay" class="lightbox-overlay" onclick="closeLightbox()">
         <div class="lightbox-card" onclick="event.stopPropagation()">
             <div class="pin"></div>
@@ -407,59 +398,177 @@
         </div>
     </div>
 
-    <script>
-        function uploadPhoto(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
+    <!-- 파이어베이스 로직 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
-                reader.onload = function(e) {
+        // 파이어베이스 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyCwMcZxQcKKd8dEgDV2VN5X0GZAgFWBFtI",
+            authDomain: "moments-d57e0.firebaseapp.com",
+            projectId: "moments-d57e0",
+            storageBucket: "moments-d57e0.firebasestorage.app",
+            messagingSenderId: "1012381746728",
+            appId: "1:1012381746728:web:1b5ffefe0461dbe6b2971d"
+        };
+        
+        // 앱 초기화
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const COLLECTION_NAME = "moments"; 
+        const postsRef = collection(db, COLLECTION_NAME);
+
+        // 익명 로그인
+        signInAnonymously(auth).then(() => {
+            console.log("Logged in anonymously");
+        }).catch((error) => {
+            console.error("Auth error", error);
+        });
+
+        // 전역 함수 설정
+        window.uploadPhoto = uploadPhoto;
+        window.removeCard = removeCard;
+        window.updateMemo = updateMemo;
+        window.openLightbox = openLightbox;
+        window.closeLightbox = closeLightbox;
+
+        // 실시간 데이터 감지
+        let currentUser = null;
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                onSnapshot(postsRef, (snapshot) => {
                     const board = document.getElementById('board');
                     
+                    if (snapshot.empty) {
+                        board.innerHTML = '<p class="empty-msg">아직 등록된 사진이 없습니다.</p>';
+                        return;
+                    }
+
+                    board.innerHTML = '';
                     const emptyMsg = document.querySelector('.empty-msg');
                     if(emptyMsg) emptyMsg.remove();
 
-                    const newCard = document.createElement('div');
-                    newCard.className = 'photo-card';
-                    
-                    const randomRotate = (Math.random() * 8 - 4).toFixed(2);
-                    newCard.style.transform = `rotate(${randomRotate}deg)`;
+                    const posts = [];
+                    snapshot.forEach(doc => {
+                        posts.push({ id: doc.id, ...doc.data() });
+                    });
 
+                    // 최신순 정렬
+                    posts.sort((a, b) => b.timestamp - a.timestamp);
+
+                    posts.forEach(post => {
+                        createCardElement(post);
+                    });
+                }, (error) => {
+                    console.error("Data load failed:", error);
+                });
+            }
+        });
+
+        // 카드 생성
+        function createCardElement(post) {
+            const board = document.getElementById('board');
+            const newCard = document.createElement('div');
+            newCard.className = 'photo-card';
+            newCard.setAttribute('data-id', post.id);
+            
+            const rotate = post.rotate || (Math.random() * 8 - 4).toFixed(2);
+            newCard.style.transform = `rotate(${rotate}deg)`;
+
+            newCard.setAttribute('ondblclick', 'openLightbox(this)');
+
+            newCard.innerHTML = `
+                <div class="pin"></div>
+                <button class="delete-btn" onclick="removeCard(event, '${post.id}')">✕</button>
+                <img src="${post.imageUrl}" alt="추억 사진">
+                <input type="text" class="memo-input" 
+                       placeholder="이름 / 소속 Cell 입력" 
+                       value="${post.memo || ''}" 
+                       onchange="updateMemo('${post.id}', this.value)"
+                       onclick="event.stopPropagation()"
+                       spellcheck="false">
+                <div class="card-date">${post.date}</div>
+            `;
+            board.appendChild(newCard);
+        }
+
+        // 사진 업로드 (용량 최적화 포함)
+        function uploadPhoto(input) {
+            if (!currentUser) {
+                alert("서버 연결 중입니다. 잠시 후 다시 시도해주세요.");
+                return;
+            }
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // 800KB 제한
+                if (file.size > 800 * 1024) { 
+                    alert("사진 용량이 너무 큽니다! (800KB 이하 권장)\n스크린샷을 찍거나 용량을 줄여서 올려주세요.");
+                    input.value = "";
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const imageUrl = e.target.result;
                     const now = new Date();
                     const dateString = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
+                    const randomRotate = (Math.random() * 8 - 4).toFixed(2);
 
-                    newCard.setAttribute('ondblclick', 'openLightbox(this)');
-
-                    newCard.innerHTML = `
-                        <div class="pin"></div>
-                        <button class="delete-btn" onclick="removeCard(event, this)">✕</button>
-                        <img src="${e.target.result}" alt="추억 사진">
-                        <input type="text" class="memo-input" placeholder="이름 / 소속 Cell 입력" spellcheck="false">
-                        <div class="card-date">${dateString}</div>
-                    `;
-
-                    board.prepend(newCard);
-                    input.value = "";
+                    try {
+                        await addDoc(postsRef, {
+                            imageUrl: imageUrl,
+                            memo: "",
+                            date: dateString,
+                            timestamp: Date.now(),
+                            rotate: randomRotate
+                        });
+                        input.value = "";
+                    } catch (error) {
+                        console.error("Upload failed", error);
+                        alert("업로드 실패: " + error.message);
+                    }
                 };
-
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(file);
             }
         }
 
-        function removeCard(event, btn) {
+        // 삭제
+        async function removeCard(event, docId) {
             event.stopPropagation();
-            const card = btn.parentElement;
-            card.style.transform = 'scale(0.8) translateY(20px)';
-            card.style.opacity = '0';
-            setTimeout(() => {
-                card.remove();
-                if (document.querySelectorAll('.photo-card').length === 0) {
-                    const board = document.getElementById('board');
-                    board.innerHTML = '<p class="empty-msg">아직 등록된 사진이 없습니다.</p>';
-                }
-            }, 300);
+            if(confirm("정말 삭제하시겠습니까?")) {
+                const card = event.target.closest('.photo-card');
+                card.style.transform = 'scale(0.8) translateY(20px)';
+                card.style.opacity = '0';
+                
+                setTimeout(async () => {
+                    try {
+                        await deleteDoc(doc(db, COLLECTION_NAME, docId));
+                    } catch (error) {
+                        console.error("Delete failed", error);
+                        alert("삭제 실패");
+                    }
+                }, 300);
+            }
         }
 
-        // --- 라이트박스 관련 스크립트 ---
+        // 메모 수정
+        async function updateMemo(docId, newText) {
+            try {
+                await updateDoc(doc(db, COLLECTION_NAME, docId), {
+                    memo: newText
+                });
+            } catch (error) {
+                console.error("Update failed", error);
+            }
+        }
+
+        // 라이트박스 열기
         function openLightbox(card) {
             const overlay = document.getElementById('lightboxOverlay');
             const img = document.getElementById('lightboxImg');
@@ -469,7 +578,6 @@
             const cardTextValue = card.querySelector('.memo-input').value;
 
             img.src = cardImgSrc;
-            // 텍스트가 없으면 공백, 있으면 전체 텍스트 그대로 표시
             text.innerText = cardTextValue || " "; 
 
             overlay.style.display = 'flex';
