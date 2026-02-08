@@ -206,6 +206,11 @@
             outline: none;
             padding: 2px 0;
             margin-top: 5px;
+            
+            /* 수정됨: 텍스트가 길어지면 ...으로 표시 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .memo-input::placeholder {
@@ -277,7 +282,7 @@
             background: var(--accent-color);
         }
 
-        /* --- 추가된 라이트박스(확대보기) 스타일 --- */
+        /* --- 라이트박스(확대보기) 스타일 --- */
         .lightbox-overlay {
             position: fixed;
             top: 0;
@@ -311,6 +316,7 @@
             transform: scale(0.9);
             transition: transform 0.3s ease;
             position: relative;
+            overflow-y: auto; /* 내용이 너무 길면 카드 내부 스크롤 */
         }
 
         .lightbox-overlay.active .lightbox-card {
@@ -319,7 +325,7 @@
 
         .lightbox-card img {
             max-width: 100%;
-            max-height: 75vh;
+            max-height: 70vh; /* 텍스트 공간 확보를 위해 이미지 높이 제한 조정 */
             object-fit: contain;
             border: 1px solid #f0f0f0;
         }
@@ -330,6 +336,13 @@
             color: #333;
             margin-top: 15px;
             text-align: center;
+            
+            /* 수정됨: 긴 텍스트 줄바꿈 및 전체 표시 */
+            width: 95%;
+            word-break: keep-all; /* 단어 단위 줄바꿈 */
+            word-wrap: break-word;
+            line-height: 1.4;
+            white-space: normal;
         }
         /* -------------------------------------- */
 
@@ -349,6 +362,11 @@
             .notice-box { margin-bottom: 35px; width: 90%; }
             .notice-content { font-size: 0.75rem; }
             .upload-section { padding: 10px 20px; }
+            
+            /* 모바일에서 라이트박스 텍스트 사이즈 조정 */
+            .lightbox-text {
+                font-size: 1.6rem;
+            }
         }
     </style>
 </head>
@@ -366,12 +384,11 @@
             </div>
         </div>
 
-        <!-- 더 슬림하고 세련되게 변경된 업로드 버튼 -->
         <div class="upload-section" onclick="document.getElementById('fileInput').click();">
             <span class="upload-icon">📸</span>
             <div class="upload-text-group">
                 <span class="upload-title">추억 추가하기</span>
-                <span class="upload-desc">터치하여 사진 선택</span>
+                <span class="upload-desc">이곳을 터치하여 업로드</span>
             </div>
             <input type="file" id="fileInput" accept="image/*" onchange="uploadPhoto(this)">
         </div>
@@ -383,7 +400,7 @@
 
     <!-- 라이트박스 (확대 보기용) 요소 추가 -->
     <div id="lightboxOverlay" class="lightbox-overlay" onclick="closeLightbox()">
-        <div class="lightbox-card" onclick="event.stopPropagation()"> <!-- 카드 클릭 시 닫히지 않게 하거나, 닫히게 하려면 제거 -->
+        <div class="lightbox-card" onclick="event.stopPropagation()">
             <div class="pin"></div>
             <img id="lightboxImg" src="" alt="확대 이미지">
             <div id="lightboxText" class="lightbox-text"></div>
@@ -410,7 +427,6 @@
                     const now = new Date();
                     const dateString = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
 
-                    // 더블 클릭 이벤트 추가: ondblclick="openLightbox(this)"
                     newCard.setAttribute('ondblclick', 'openLightbox(this)');
 
                     newCard.innerHTML = `
@@ -443,21 +459,20 @@
             }, 300);
         }
 
-        // --- 라이트박스 관련 스크립트 추가 ---
+        // --- 라이트박스 관련 스크립트 ---
         function openLightbox(card) {
             const overlay = document.getElementById('lightboxOverlay');
             const img = document.getElementById('lightboxImg');
             const text = document.getElementById('lightboxText');
             
-            // 클릭된 카드의 이미지 소스와 텍스트 내용을 가져옴
             const cardImgSrc = card.querySelector('img').src;
             const cardTextValue = card.querySelector('.memo-input').value;
 
             img.src = cardImgSrc;
-            text.innerText = cardTextValue || " "; // 텍스트가 없으면 공백
+            // 텍스트가 없으면 공백, 있으면 전체 텍스트 그대로 표시
+            text.innerText = cardTextValue || " "; 
 
             overlay.style.display = 'flex';
-            // 약간의 딜레이 후 active 클래스를 추가해야 transition 효과가 먹힘
             setTimeout(() => {
                 overlay.classList.add('active');
             }, 10);
@@ -468,9 +483,8 @@
             overlay.classList.remove('active');
             setTimeout(() => {
                 overlay.style.display = 'none';
-            }, 300); // transition 시간(0.3s)과 맞춤
+            }, 300);
         }
-        // ------------------------------------
     </script>
 </body>
 </html>
